@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,7 +23,7 @@ export default function AuthForm() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/`, // Direct to home page
       },
     })
 
@@ -54,7 +53,7 @@ export default function AuthForm() {
             <Input
               id="email"
               type="email"
-              placeholder="yourname@gamil.com"
+              placeholder="yourname@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

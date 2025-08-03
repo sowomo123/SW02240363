@@ -28,17 +28,18 @@ export default function Header() {
     return () => {
       subscription.unsubscribe()
     }
-  }, [supabase])
+  }, [])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
-    router.refresh()
+    setUser(null)
+    router.push("/")
   }
 
   return (
     <header
       className="flex items-center justify-between p-4 border-b"
-      style={{ backgroundColor: "#d3f3d3ff" }}
+      style={{ backgroundColor: "#bae6fd" }}
     >
       <div className="flex-1 flex justify-center">
         <h1
@@ -50,7 +51,14 @@ export default function Header() {
       </div>
       {user ? (
         <div className="flex items-center gap-4 absolute right-4">
-          <span className="text-sm text-muted-foreground hidden sm:block">{user.email}</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/bookmarks")}
+          >
+            My Bookmarks
+          </Button>
+          <span className="text-sm hidden sm:block">{user.email}</span>
           <Button onClick={handleSignOut} variant="outline" size="sm">
             Sign Out
           </Button>
@@ -61,7 +69,7 @@ export default function Header() {
             variant="outline"
             size="sm"
             onClick={() => router.push("/signin")}
-            style={{ backgroundColor: "#b1ed9aff", color: "#000", borderColor: "#b1ed9aff" }}
+            style={{ backgroundColor: "#4ade80", color: "#000", borderColor: "#4ade80" }}
           >
             Sign In
           </Button>

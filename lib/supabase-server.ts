@@ -4,24 +4,22 @@ import { cookies } from "next/headers"
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const createServerClient = () => {
+export function createServerClient() {
   const cookieStore = cookies()
-
-  return createClient(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
+  
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      storage: {
+        getItem: (key: string) => {
+          return cookieStore.get(key)?.value ?? null
         },
-        set(name: string, value: string, options: any) {
-          cookieStore.set({ name, value, ...options })
+        setItem: (key: string, value: string) => {
+          cookieStore.set(key, value)
         },
-        remove(name: string, options: any) {
-          cookieStore.set({ name, value: "", ...options })
+        removeItem: (key: string) => {
+          cookieStore.delete(key)
         },
       },
-    }
-  )
+    },
+  })
 }

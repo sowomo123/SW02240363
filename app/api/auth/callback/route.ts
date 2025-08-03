@@ -1,20 +1,21 @@
-import { createServerClient } from "@/lib/supabase-server"
 import { NextResponse } from "next/server"
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get("code")
-  // if "next" is in param, use it as the redirect URL
-  const next = searchParams.get("next") ?? "/"
+  const error = searchParams.get("error")
 
-  if (code) {
-    const supabase = createServerClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
-    }
+  console.log("Callback called with:", { code: !!code, error })
+
+  if (error) {
+    console.error("Auth error:", error)
+    return NextResponse.redirect(`${origin}/auth/auth-error`)
   }
 
-  // return the user to an error page with instructions
+  if (code) {
+    // Redirect to home page with the code, let client handle it
+    return NextResponse.redirect(`${origin}/?code=${code}`)
+  }
+
   return NextResponse.redirect(`${origin}/auth/auth-error`)
 }
